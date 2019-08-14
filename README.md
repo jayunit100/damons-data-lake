@@ -1,25 +1,29 @@
 # Build your own data lake
 
-How to build your own cloud-native data lake using AWS with typical data ingest patterns.
+How to build your own cloud-native data lake (using AWS as the canonical example) with typical large scale data ingest patterns.
 
 ## Overview
 
 This project uses managed services from AWS to ingest and store various sources of streaming and batch data.
 
-It uses several personal data sources including my own website, nerdy quantified self metrics, and Apple Health data.
+It requires (1) an Object store (like *S3*) (2) a stream ingestion service (like *Kinesis*) (3) A batch runnable ETL service (like *Glue*) for formatting and partitioning of data, and (4) a query engine that can operate against data inside of (1) after it has been partitioned by (3) (such as *Athena*)
 
-Here are the different components used:
-- Basic stats are published to a Kinesis data stream.
-- A Kinesis Firehose is then setup to consume the data from that stream and write it out to S3 every so often.
-- A Glue Python Shell job is also used to gather Github Insights data.
-- Once in S3, a Glue Crawler identifies the schema and keeps the partitions up-to-date.
-- And then the data can be queried with Athena!
+As a canonical implementation of (1), (2), (3), and (4), we use various AWS on-demand services (respectively S3, Kinesis, Glue, and Athena).  Ideas on how to build a similar lake using other cloud services (or open source services) for other cloud native platforms are welcome !
+
+## Input data
+
+The raw input for this example is based on several personal data sources including Damon's own website, nerdy quantified self metrics, and Apple Health data.  The architecture of the data pipeline can be expressed in the 4 different stages of transformations which occur as follows:
+
+1. Basic stats are published to a *Kinesis* data stream, which is setup to consume the data from that stream and write it out to *S3* every so often.
+2. A *Glue* Python Shell job is also used to gather Github Insights data.
+3. Once in S3, a Glue Crawler identifies the schema and keeps the partitions up-to-date.
+4. And then the data can be queried with *Athena*!
 
 You can see what this looks like in the [architecture diagram](#architecture-diagram).
 
 ## Getting started
 
-Currently, I provision this all manually using the AWS console. I will eventually make a CloudFormation template.
+The infratructure components for this tutorial are provisioned this all manually using the AWS console.  Of course, the plan is to eventually make a CloudFormation template.
 
 Set up the following services - details for each one are below.
 
